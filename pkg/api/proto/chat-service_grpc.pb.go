@@ -18,59 +18,59 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
-// ChatServiceClient is the client API for ChatService service.
+// RoomServiceClient is the client API for RoomService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type ChatServiceClient interface {
-	GetChatRoomList(ctx context.Context, in *ChatRoomRequest, opts ...grpc.CallOption) (*ChatRoomList, error)
-	CreateChatRoom(ctx context.Context, in *ChatRoomRequest, opts ...grpc.CallOption) (*ChatRoomResponse, error)
-	JoinChatRoom(ctx context.Context, in *ChatRoomRequest, opts ...grpc.CallOption) (*ChatRoomResponse, error)
-	CreateStream(ctx context.Context, in *ChatRoomRequest, opts ...grpc.CallOption) (ChatService_CreateStreamClient, error)
+type RoomServiceClient interface {
+	GetRoomList(ctx context.Context, in *RoomRequest, opts ...grpc.CallOption) (*RoomList, error)
+	CreateRoom(ctx context.Context, in *RoomRequest, opts ...grpc.CallOption) (*RoomResponse, error)
+	JoinRoom(ctx context.Context, in *RoomRequest, opts ...grpc.CallOption) (*RoomResponse, error)
+	CreateStream(ctx context.Context, in *RoomRequest, opts ...grpc.CallOption) (RoomService_CreateStreamClient, error)
 	BroadcastMessage(ctx context.Context, in *Message, opts ...grpc.CallOption) (*Close, error)
-	LeaveChatRoom(ctx context.Context, in *ChatRoomRequest, opts ...grpc.CallOption) (*ChatRoomResponse, error)
+	LeaveRoom(ctx context.Context, in *RoomRequest, opts ...grpc.CallOption) (*RoomResponse, error)
 }
 
-type chatServiceClient struct {
+type roomServiceClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewChatServiceClient(cc grpc.ClientConnInterface) ChatServiceClient {
-	return &chatServiceClient{cc}
+func NewRoomServiceClient(cc grpc.ClientConnInterface) RoomServiceClient {
+	return &roomServiceClient{cc}
 }
 
-func (c *chatServiceClient) GetChatRoomList(ctx context.Context, in *ChatRoomRequest, opts ...grpc.CallOption) (*ChatRoomList, error) {
-	out := new(ChatRoomList)
-	err := c.cc.Invoke(ctx, "/chat.ChatService/GetChatRoomList", in, out, opts...)
+func (c *roomServiceClient) GetRoomList(ctx context.Context, in *RoomRequest, opts ...grpc.CallOption) (*RoomList, error) {
+	out := new(RoomList)
+	err := c.cc.Invoke(ctx, "/room.RoomService/GetRoomList", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *chatServiceClient) CreateChatRoom(ctx context.Context, in *ChatRoomRequest, opts ...grpc.CallOption) (*ChatRoomResponse, error) {
-	out := new(ChatRoomResponse)
-	err := c.cc.Invoke(ctx, "/chat.ChatService/CreateChatRoom", in, out, opts...)
+func (c *roomServiceClient) CreateRoom(ctx context.Context, in *RoomRequest, opts ...grpc.CallOption) (*RoomResponse, error) {
+	out := new(RoomResponse)
+	err := c.cc.Invoke(ctx, "/room.RoomService/CreateRoom", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *chatServiceClient) JoinChatRoom(ctx context.Context, in *ChatRoomRequest, opts ...grpc.CallOption) (*ChatRoomResponse, error) {
-	out := new(ChatRoomResponse)
-	err := c.cc.Invoke(ctx, "/chat.ChatService/JoinChatRoom", in, out, opts...)
+func (c *roomServiceClient) JoinRoom(ctx context.Context, in *RoomRequest, opts ...grpc.CallOption) (*RoomResponse, error) {
+	out := new(RoomResponse)
+	err := c.cc.Invoke(ctx, "/room.RoomService/JoinRoom", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *chatServiceClient) CreateStream(ctx context.Context, in *ChatRoomRequest, opts ...grpc.CallOption) (ChatService_CreateStreamClient, error) {
-	stream, err := c.cc.NewStream(ctx, &ChatService_ServiceDesc.Streams[0], "/chat.ChatService/CreateStream", opts...)
+func (c *roomServiceClient) CreateStream(ctx context.Context, in *RoomRequest, opts ...grpc.CallOption) (RoomService_CreateStreamClient, error) {
+	stream, err := c.cc.NewStream(ctx, &RoomService_ServiceDesc.Streams[0], "/room.RoomService/CreateStream", opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &chatServiceCreateStreamClient{stream}
+	x := &roomServiceCreateStreamClient{stream}
 	if err := x.ClientStream.SendMsg(in); err != nil {
 		return nil, err
 	}
@@ -80,16 +80,16 @@ func (c *chatServiceClient) CreateStream(ctx context.Context, in *ChatRoomReques
 	return x, nil
 }
 
-type ChatService_CreateStreamClient interface {
+type RoomService_CreateStreamClient interface {
 	Recv() (*Message, error)
 	grpc.ClientStream
 }
 
-type chatServiceCreateStreamClient struct {
+type roomServiceCreateStreamClient struct {
 	grpc.ClientStream
 }
 
-func (x *chatServiceCreateStreamClient) Recv() (*Message, error) {
+func (x *roomServiceCreateStreamClient) Recv() (*Message, error) {
 	m := new(Message)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
@@ -97,215 +97,215 @@ func (x *chatServiceCreateStreamClient) Recv() (*Message, error) {
 	return m, nil
 }
 
-func (c *chatServiceClient) BroadcastMessage(ctx context.Context, in *Message, opts ...grpc.CallOption) (*Close, error) {
+func (c *roomServiceClient) BroadcastMessage(ctx context.Context, in *Message, opts ...grpc.CallOption) (*Close, error) {
 	out := new(Close)
-	err := c.cc.Invoke(ctx, "/chat.ChatService/BroadcastMessage", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/room.RoomService/BroadcastMessage", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *chatServiceClient) LeaveChatRoom(ctx context.Context, in *ChatRoomRequest, opts ...grpc.CallOption) (*ChatRoomResponse, error) {
-	out := new(ChatRoomResponse)
-	err := c.cc.Invoke(ctx, "/chat.ChatService/LeaveChatRoom", in, out, opts...)
+func (c *roomServiceClient) LeaveRoom(ctx context.Context, in *RoomRequest, opts ...grpc.CallOption) (*RoomResponse, error) {
+	out := new(RoomResponse)
+	err := c.cc.Invoke(ctx, "/room.RoomService/LeaveRoom", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// ChatServiceServer is the server API for ChatService service.
-// All implementations must embed UnimplementedChatServiceServer
+// RoomServiceServer is the server API for RoomService service.
+// All implementations must embed UnimplementedRoomServiceServer
 // for forward compatibility
-type ChatServiceServer interface {
-	GetChatRoomList(context.Context, *ChatRoomRequest) (*ChatRoomList, error)
-	CreateChatRoom(context.Context, *ChatRoomRequest) (*ChatRoomResponse, error)
-	JoinChatRoom(context.Context, *ChatRoomRequest) (*ChatRoomResponse, error)
-	CreateStream(*ChatRoomRequest, ChatService_CreateStreamServer) error
+type RoomServiceServer interface {
+	GetRoomList(context.Context, *RoomRequest) (*RoomList, error)
+	CreateRoom(context.Context, *RoomRequest) (*RoomResponse, error)
+	JoinRoom(context.Context, *RoomRequest) (*RoomResponse, error)
+	CreateStream(*RoomRequest, RoomService_CreateStreamServer) error
 	BroadcastMessage(context.Context, *Message) (*Close, error)
-	LeaveChatRoom(context.Context, *ChatRoomRequest) (*ChatRoomResponse, error)
-	mustEmbedUnimplementedChatServiceServer()
+	LeaveRoom(context.Context, *RoomRequest) (*RoomResponse, error)
+	mustEmbedUnimplementedRoomServiceServer()
 }
 
-// UnimplementedChatServiceServer must be embedded to have forward compatible implementations.
-type UnimplementedChatServiceServer struct {
+// UnimplementedRoomServiceServer must be embedded to have forward compatible implementations.
+type UnimplementedRoomServiceServer struct {
 }
 
-func (UnimplementedChatServiceServer) GetChatRoomList(context.Context, *ChatRoomRequest) (*ChatRoomList, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetChatRoomList not implemented")
+func (UnimplementedRoomServiceServer) GetRoomList(context.Context, *RoomRequest) (*RoomList, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetRoomList not implemented")
 }
-func (UnimplementedChatServiceServer) CreateChatRoom(context.Context, *ChatRoomRequest) (*ChatRoomResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateChatRoom not implemented")
+func (UnimplementedRoomServiceServer) CreateRoom(context.Context, *RoomRequest) (*RoomResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateRoom not implemented")
 }
-func (UnimplementedChatServiceServer) JoinChatRoom(context.Context, *ChatRoomRequest) (*ChatRoomResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method JoinChatRoom not implemented")
+func (UnimplementedRoomServiceServer) JoinRoom(context.Context, *RoomRequest) (*RoomResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method JoinRoom not implemented")
 }
-func (UnimplementedChatServiceServer) CreateStream(*ChatRoomRequest, ChatService_CreateStreamServer) error {
+func (UnimplementedRoomServiceServer) CreateStream(*RoomRequest, RoomService_CreateStreamServer) error {
 	return status.Errorf(codes.Unimplemented, "method CreateStream not implemented")
 }
-func (UnimplementedChatServiceServer) BroadcastMessage(context.Context, *Message) (*Close, error) {
+func (UnimplementedRoomServiceServer) BroadcastMessage(context.Context, *Message) (*Close, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method BroadcastMessage not implemented")
 }
-func (UnimplementedChatServiceServer) LeaveChatRoom(context.Context, *ChatRoomRequest) (*ChatRoomResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method LeaveChatRoom not implemented")
+func (UnimplementedRoomServiceServer) LeaveRoom(context.Context, *RoomRequest) (*RoomResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LeaveRoom not implemented")
 }
-func (UnimplementedChatServiceServer) mustEmbedUnimplementedChatServiceServer() {}
+func (UnimplementedRoomServiceServer) mustEmbedUnimplementedRoomServiceServer() {}
 
-// UnsafeChatServiceServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to ChatServiceServer will
+// UnsafeRoomServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to RoomServiceServer will
 // result in compilation errors.
-type UnsafeChatServiceServer interface {
-	mustEmbedUnimplementedChatServiceServer()
+type UnsafeRoomServiceServer interface {
+	mustEmbedUnimplementedRoomServiceServer()
 }
 
-func RegisterChatServiceServer(s grpc.ServiceRegistrar, srv ChatServiceServer) {
-	s.RegisterService(&ChatService_ServiceDesc, srv)
+func RegisterRoomServiceServer(s grpc.ServiceRegistrar, srv RoomServiceServer) {
+	s.RegisterService(&RoomService_ServiceDesc, srv)
 }
 
-func _ChatService_GetChatRoomList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ChatRoomRequest)
+func _RoomService_GetRoomList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RoomRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ChatServiceServer).GetChatRoomList(ctx, in)
+		return srv.(RoomServiceServer).GetRoomList(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/chat.ChatService/GetChatRoomList",
+		FullMethod: "/room.RoomService/GetRoomList",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ChatServiceServer).GetChatRoomList(ctx, req.(*ChatRoomRequest))
+		return srv.(RoomServiceServer).GetRoomList(ctx, req.(*RoomRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ChatService_CreateChatRoom_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ChatRoomRequest)
+func _RoomService_CreateRoom_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RoomRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ChatServiceServer).CreateChatRoom(ctx, in)
+		return srv.(RoomServiceServer).CreateRoom(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/chat.ChatService/CreateChatRoom",
+		FullMethod: "/room.RoomService/CreateRoom",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ChatServiceServer).CreateChatRoom(ctx, req.(*ChatRoomRequest))
+		return srv.(RoomServiceServer).CreateRoom(ctx, req.(*RoomRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ChatService_JoinChatRoom_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ChatRoomRequest)
+func _RoomService_JoinRoom_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RoomRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ChatServiceServer).JoinChatRoom(ctx, in)
+		return srv.(RoomServiceServer).JoinRoom(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/chat.ChatService/JoinChatRoom",
+		FullMethod: "/room.RoomService/JoinRoom",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ChatServiceServer).JoinChatRoom(ctx, req.(*ChatRoomRequest))
+		return srv.(RoomServiceServer).JoinRoom(ctx, req.(*RoomRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ChatService_CreateStream_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(ChatRoomRequest)
+func _RoomService_CreateStream_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(RoomRequest)
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
-	return srv.(ChatServiceServer).CreateStream(m, &chatServiceCreateStreamServer{stream})
+	return srv.(RoomServiceServer).CreateStream(m, &roomServiceCreateStreamServer{stream})
 }
 
-type ChatService_CreateStreamServer interface {
+type RoomService_CreateStreamServer interface {
 	Send(*Message) error
 	grpc.ServerStream
 }
 
-type chatServiceCreateStreamServer struct {
+type roomServiceCreateStreamServer struct {
 	grpc.ServerStream
 }
 
-func (x *chatServiceCreateStreamServer) Send(m *Message) error {
+func (x *roomServiceCreateStreamServer) Send(m *Message) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-func _ChatService_BroadcastMessage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _RoomService_BroadcastMessage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(Message)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ChatServiceServer).BroadcastMessage(ctx, in)
+		return srv.(RoomServiceServer).BroadcastMessage(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/chat.ChatService/BroadcastMessage",
+		FullMethod: "/room.RoomService/BroadcastMessage",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ChatServiceServer).BroadcastMessage(ctx, req.(*Message))
+		return srv.(RoomServiceServer).BroadcastMessage(ctx, req.(*Message))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ChatService_LeaveChatRoom_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ChatRoomRequest)
+func _RoomService_LeaveRoom_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RoomRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ChatServiceServer).LeaveChatRoom(ctx, in)
+		return srv.(RoomServiceServer).LeaveRoom(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/chat.ChatService/LeaveChatRoom",
+		FullMethod: "/room.RoomService/LeaveRoom",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ChatServiceServer).LeaveChatRoom(ctx, req.(*ChatRoomRequest))
+		return srv.(RoomServiceServer).LeaveRoom(ctx, req.(*RoomRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// ChatService_ServiceDesc is the grpc.ServiceDesc for ChatService service.
+// RoomService_ServiceDesc is the grpc.ServiceDesc for RoomService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var ChatService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "chat.ChatService",
-	HandlerType: (*ChatServiceServer)(nil),
+var RoomService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "room.RoomService",
+	HandlerType: (*RoomServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "GetChatRoomList",
-			Handler:    _ChatService_GetChatRoomList_Handler,
+			MethodName: "GetRoomList",
+			Handler:    _RoomService_GetRoomList_Handler,
 		},
 		{
-			MethodName: "CreateChatRoom",
-			Handler:    _ChatService_CreateChatRoom_Handler,
+			MethodName: "CreateRoom",
+			Handler:    _RoomService_CreateRoom_Handler,
 		},
 		{
-			MethodName: "JoinChatRoom",
-			Handler:    _ChatService_JoinChatRoom_Handler,
+			MethodName: "JoinRoom",
+			Handler:    _RoomService_JoinRoom_Handler,
 		},
 		{
 			MethodName: "BroadcastMessage",
-			Handler:    _ChatService_BroadcastMessage_Handler,
+			Handler:    _RoomService_BroadcastMessage_Handler,
 		},
 		{
-			MethodName: "LeaveChatRoom",
-			Handler:    _ChatService_LeaveChatRoom_Handler,
+			MethodName: "LeaveRoom",
+			Handler:    _RoomService_LeaveRoom_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{
 		{
 			StreamName:    "CreateStream",
-			Handler:       _ChatService_CreateStream_Handler,
+			Handler:       _RoomService_CreateStream_Handler,
 			ServerStreams: true,
 		},
 	},

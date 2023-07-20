@@ -1,28 +1,28 @@
 syntax = "proto3";
-package chat;
+package room;
 option go_package = "./proto";
 
 message User {
-  string id = 1;
+  string userId = 1;
   string display_name = 2;
 }
 
 message Message {
-  string id = 1;
+  string roomId = 1;
   User user = 2;
   string message = 3;
   string timestamp = 4;
 }
 
-message ChatRoom {
-  string id = 1;
+message Room {
+  string roomId = 1;
   string name = 2;
   repeated User members = 3;
   repeated Message messages = 4;
 }
 
 // 채팅룸 관련 요청 메시지
-message ChatRoomRequest {
+message RoomRequest {
   enum Action {
     CREATE = 0;
     JOIN = 1;
@@ -30,11 +30,11 @@ message ChatRoomRequest {
   }
   User user = 1;
   Action action = 2;
-  ChatRoom chat_room = 3;
+  Room room = 3;
 }
 
 // 채팅룸 관련 응답 메시지
-message ChatRoomResponse {
+message RoomResponse {
   enum Status {
     SUCCESS = 0;
     FAILURE = 1;
@@ -42,26 +42,26 @@ message ChatRoomResponse {
 
   Status status = 1;
   string message = 2;
-  ChatRoom chat_room = 3;
+  Room room = 3;
 }
 
-message ChatRoomList {
-  repeated ChatRoom chat_room_list = 1;
+message RoomList {
+  repeated Room room_list = 1;
 }
 
 message Close{}
 
-service ChatService {
+service RoomService {
 
-  rpc GetChatRoomList(ChatRoomRequest) returns (ChatRoomList);
-  rpc CreateChatRoom(ChatRoomRequest) returns (ChatRoomResponse);
-  rpc JoinChatRoom(ChatRoomRequest) returns (ChatRoomResponse);
+  rpc GetRoomList(RoomRequest) returns (RoomList);
+  rpc CreateRoom(RoomRequest) returns (RoomResponse);
+  rpc JoinRoom(RoomRequest) returns (RoomResponse);
 
 
-  rpc CreateStream(ChatRoomRequest) returns (stream Message);
+  rpc CreateStream(RoomRequest) returns (stream Message);
   rpc BroadcastMessage(Message) returns (Close);
 
 
-  rpc LeaveChatRoom(ChatRoomRequest) returns (ChatRoomResponse);
+  rpc LeaveRoom(RoomRequest) returns (RoomResponse);
 
 }
