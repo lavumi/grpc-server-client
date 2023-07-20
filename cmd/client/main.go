@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/metadata"
-	proto "grpc-game-server/pkg/api/proto"
+	pb "grpc-game-server/pkg/api/proto"
 	"os"
 
 	"encoding/hex"
@@ -18,20 +18,47 @@ import (
 	"google.golang.org/grpc"
 )
 
-var client proto.ChatServiceClient
+var client pb.RoomServiceClient
 var wait *sync.WaitGroup
 
 func init() {
 	wait = &sync.WaitGroup{}
 }
 
-func connect(user *proto.User) error {
-	var streamError error
+var currentRoom *pb.Room
 
-	stream, err := client.CreateStream(context.Background(), &proto.ChatRoomRequest{
-		User:     user,
-		Action:   0,
-		ChatRoom: nil,
+func createRoom(user *pb.User, room *pb.Room) error {
+	roomInfo, err := client.CreateRoom(context.Background(), &pb.RoomRequest{
+		User:   user,
+		Action: 0,
+		Room:   room,
+	})
+	if err != nil {
+		fmt.Printf("Create Room Fail: %v", err)
+	}
+
+	currentRoom = roomInfo.GetRoom()
+	return nil
+}
+
+func joinRoom(user *pb.User, room *pb.Room) error {
+
+	roomInfo, err := client.JoinRoom(context.Background(), &pb.RoomRequest{
+		User:   user,
+		Action: 0,
+		Room:   room,
+	})
+	if err != nil {
+		log.Printf("Error Sending Message: %v", err)
+	}
+	log.Printf("Join testing Room")
+	currentRoom = roomInfo.Room
+
+	var streamError error
+	stream, err := client.CreateStream(context.Background(), &pb.RoomRequest{
+		User:   user,
+		Action: 0,
+		Room:   currentRoom,
 	})
 
 	if err != nil {
@@ -39,7 +66,7 @@ func connect(user *proto.User) error {
 	}
 
 	wait.Add(1)
-	go func(str proto.ChatService_CreateStreamClient) {
+	go func(str pb.RoomService_CreateStreamClient) {
 		defer wait.Done()
 
 		for {
@@ -76,21 +103,33 @@ func main() {
 	if err != nil {
 		log.Fatalf("Couldnt connect to service: %v", err)
 	}
-	fmt.Printf("Chatting Server Connected\n")
 
-	client = proto.NewChatServiceClient(conn)
-	user := &proto.User{
-		Id:          hex.EncodeToString(id[:]),
+	client = pb.NewRoomServiceClient(conn)
+	user := &pb.User{
+		UserId:      hex.EncodeToString(id[:]),
 		DisplayName: name,
 	}
 
-	err = connect(user)
-
-	if err != nil {
-		log.Fatalf("Couldnt connect to service: %v", err)
-		return
+	room := &pb.Room{
+		RoomId:   "",
+		Name:     "test_room_1",
+		Members:  nil,
+		Messages: nil,
 	}
 
+	err = createRoom(user, room)
+	if err != nil {
+		log.Fatalf("Couldnt create room: %v", err)
+		return
+	}
+	log.Printf("Create room success %s", currentRoom.GetRoomId())
+
+	err = joinRoom(user, currentRoom)
+	if err != nil {
+		log.Fatalf("Couldnt join room: %v", err)
+		return
+	}
+	fmt.Printf("ting Server Connected\n")
 	md := metadata.Pairs("authorization", "my_token") // 예시로 'authorization' 헤더에 Bearer 토큰을 설정
 	ctx := metadata.NewOutgoingContext(context.Background(), md)
 
@@ -100,8 +139,8 @@ func main() {
 
 		scanner := bufio.NewScanner(os.Stdin)
 		for scanner.Scan() {
-			msg := &proto.Message{
-				Id:        user.Id,
+			msg := &pb.Message{
+				RoomId:    currentRoom.RoomId,
 				User:      user,
 				Message:   scanner.Text(),
 				Timestamp: timestamp.String(),
