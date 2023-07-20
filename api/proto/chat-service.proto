@@ -1,0 +1,67 @@
+syntax = "proto3";
+package chat;
+option go_package = "./proto";
+
+message User {
+  string id = 1;
+  string display_name = 2;
+}
+
+message Message {
+  string id = 1;
+  User user = 2;
+  string message = 3;
+  string timestamp = 4;
+}
+
+message ChatRoom {
+  string id = 1;
+  string name = 2;
+  repeated User members = 3;
+  repeated Message messages = 4;
+}
+
+// 채팅룸 관련 요청 메시지
+message ChatRoomRequest {
+  enum Action {
+    CREATE = 0;
+    JOIN = 1;
+    LEAVE = 2;
+  }
+  User user = 1;
+  Action action = 2;
+  ChatRoom chat_room = 3;
+}
+
+// 채팅룸 관련 응답 메시지
+message ChatRoomResponse {
+  enum Status {
+    SUCCESS = 0;
+    FAILURE = 1;
+  }
+
+  Status status = 1;
+  string message = 2;
+  ChatRoom chat_room = 3;
+}
+
+message ChatRoomList {
+  repeated ChatRoom chat_room_list = 1;
+}
+
+message Close{}
+
+service ChatService {
+
+  rpc GetChatRoomList(ChatRoomRequest) returns (ChatRoomList);
+  rpc CreateChatRoom(ChatRoomRequest) returns (ChatRoomResponse);
+  rpc JoinChatRoom(ChatRoomRequest) returns (ChatRoomResponse);
+
+
+  rpc CreateStream(ChatRoomRequest) returns (stream Message);
+  rpc BroadcastMessage(Message) returns (Close);
+
+
+  rpc LeaveChatRoom(ChatRoomRequest) returns (ChatRoomResponse);
+
+}
