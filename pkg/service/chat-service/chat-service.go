@@ -103,6 +103,10 @@ func (s *ChattingServer) BroadcastMessage(ctx context.Context, msg *pb.Message) 
 
 	//log.Printf(msg.User.UserId)
 
+	room, err := roomManager.GetRoomInfo(msg.RoomId)
+	room.Messages = append(room.Messages, msg)
+
+	//방 안의 유저들에게 채팅 스트림
 	connections, err := roomManager.GetStream(msg.RoomId)
 	if err != nil {
 		return &pb.Close{}, status.Errorf(codes.FailedPrecondition, "room not exist")
@@ -141,6 +145,7 @@ func (s *ChattingServer) BroadcastMessage(ctx context.Context, msg *pb.Message) 
 		}
 		close(done)
 	}()
+
 	<-done
 	return &pb.Close{}, nil
 }
@@ -185,12 +190,6 @@ func (s *ChattingServer) CreateRoom(_ context.Context, req *pb.RoomRequest) (*pb
 
 func (s *ChattingServer) JoinRoom(_ context.Context, req *pb.RoomRequest) (*pb.RoomResponse, error) {
 	roomId := req.Room.GetRoomId()
-	//if s.WaitingRooms[roomName] == nil {
-	//	return nil, status.Errorf(codes.NotFound, "room NotFound")
-	//}
-
-	//roomManager.JoinRoom(roomId, req.User, conn)
-
 	room, err := roomManager.GetRoomInfo(roomId)
 	if err != nil {
 		return nil, err
