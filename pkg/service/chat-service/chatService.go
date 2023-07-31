@@ -90,7 +90,7 @@ func (s *ChattingServer) CreateStream(request *pb.RoomRequest, stream pb.RoomSer
 	return <-conn.error
 }
 
-func (s *ChattingServer) BroadcastMessage(ctx context.Context, msg *pb.Message) (*pb.Close, error) {
+func (s *ChattingServer) BroadcastMessage(_ context.Context, msg *pb.Message) (*pb.Close, error) {
 	wait := sync.WaitGroup{}
 	done := make(chan int)
 	disconnected := false

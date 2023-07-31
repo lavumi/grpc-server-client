@@ -14,7 +14,7 @@ Refer to [golang-standards/project-layout](https://github.com/golang-standards/p
 
 ## Run protobuf Compiler
 ```bash
-protoc --go_out=pkg/api --go_opt=paths=import --go-grpc_out=pkg/api --go-grpc_opt=paths=import api/proto/chat-service.proto
+protoc --go_out=pkg/api --go_opt=paths=import --go-grpc_out=pkg/api --go-grpc_opt=paths=import api/proto/chatService.proto
 ```
 
 

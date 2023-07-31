@@ -5,6 +5,7 @@ import (
 	"encoding/hex"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/test/bufconn"
 	pb "grpc-game-server/pkg/api/proto"
 	chat_service "grpc-game-server/pkg/service/chat-service"
@@ -32,7 +33,7 @@ func init() {
 	}()
 
 	name := "test_user"
-	id := sha256.Sum256([]byte("timetimetime" + name))
+	id := sha256.Sum256([]byte("time_time" + name))
 	testUser = &pb.User{
 		UserId:      hex.EncodeToString(id[:]),
 		DisplayName: name,
@@ -52,9 +53,9 @@ func bufDialer(context.Context, string) (net.Conn, error) {
 
 func TestJoinRoom(t *testing.T) {
 	ctx := context.Background()
-	conn, err := grpc.DialContext(ctx, "bufnet", grpc.WithContextDialer(bufDialer), grpc.WithInsecure())
+	conn, err := grpc.DialContext(ctx, "test_buf_conn", grpc.WithContextDialer(bufDialer), grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
-		t.Fatalf("Failed to dial bufnet: %v", err)
+		t.Fatalf("Failed to dial bufcon: %v", err)
 	}
 	defer func(conn *grpc.ClientConn) {
 		err := conn.Close()
