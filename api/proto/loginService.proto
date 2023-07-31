@@ -1,0 +1,30 @@
+syntax = "proto3";
+package lavumi;
+option go_package = "./proto";
+
+import "types/user.proto";
+
+
+message LoginRequest {
+  enum Type {
+    APPLE = 0;
+    GOOGLE = 1;
+    GUEST = 2;
+  }
+  Type loginType = 1;
+  string platformId = 2;
+  string platformToken = 3;
+}
+
+message LoginResponse {
+  enum Status {
+    SUCCESS = 0;
+    FAILURE = 1;
+  }
+  Status status = 1;
+  User user = 2;
+}
+
+service LoginService {
+  rpc Login(LoginRequest) returns (LoginResponse);
+}

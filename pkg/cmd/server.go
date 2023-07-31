@@ -1,39 +1,34 @@
 package cmd
 
 import (
+	"github.com/joho/godotenv"
 	"google.golang.org/grpc"
 	pb "grpc-game-server/pkg/api/proto"
-	"grpc-game-server/pkg/service/chat-service"
+	"grpc-game-server/pkg/database"
+	"grpc-game-server/pkg/service/chatService"
 	"log"
 	"net"
 )
 
 func Start() {
+	// .env 파일 로드
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
 	lis, err := net.Listen("tcp", ":8088")
 	if err != nil {
 		log.Fatalf("fail to listen: %v", err)
 	}
 
-	grpcServer := grpc.NewServer()
+	db := database.Database{}
+	db.Init()
 
-	server := &chat_service.ChattingServer{}
+	server := &chatService.ChattingServer{}
 	server.Init()
 
-	//server.WaitingRooms["test_room_1"] = &chat_service.Room{
-	//	Connection: nil,
-	//	Id:         "test1",
-	//	Name:       "test_room_1",
-	//	Members:    nil,
-	//	Messages:   nil,
-	//}
-	//
-	//server.WaitingRooms["test_room_2"] = &chat_service.Room{
-	//	Connection: nil,
-	//	Id:         "test2",
-	//	Name:       "test_room_2",
-	//	Members:    nil,
-	//	Messages:   nil,
-	//}
+	grpcServer := grpc.NewServer()
 
 	pb.RegisterRoomServiceServer(grpcServer, server)
 	if err := grpcServer.Serve(lis); err != nil {

@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v4.23.4
-// source: api/proto/chatService.proto
+// source: chatService.proto
 
 package proto
 
@@ -40,7 +40,7 @@ func NewRoomServiceClient(cc grpc.ClientConnInterface) RoomServiceClient {
 
 func (c *roomServiceClient) GetRoomList(ctx context.Context, in *RoomRequest, opts ...grpc.CallOption) (*RoomList, error) {
 	out := new(RoomList)
-	err := c.cc.Invoke(ctx, "/room.RoomService/GetRoomList", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/lavumi.RoomService/GetRoomList", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -49,7 +49,7 @@ func (c *roomServiceClient) GetRoomList(ctx context.Context, in *RoomRequest, op
 
 func (c *roomServiceClient) CreateRoom(ctx context.Context, in *RoomRequest, opts ...grpc.CallOption) (*RoomResponse, error) {
 	out := new(RoomResponse)
-	err := c.cc.Invoke(ctx, "/room.RoomService/CreateRoom", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/lavumi.RoomService/CreateRoom", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -58,7 +58,7 @@ func (c *roomServiceClient) CreateRoom(ctx context.Context, in *RoomRequest, opt
 
 func (c *roomServiceClient) JoinRoom(ctx context.Context, in *RoomRequest, opts ...grpc.CallOption) (*RoomResponse, error) {
 	out := new(RoomResponse)
-	err := c.cc.Invoke(ctx, "/room.RoomService/JoinRoom", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/lavumi.RoomService/JoinRoom", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -66,7 +66,7 @@ func (c *roomServiceClient) JoinRoom(ctx context.Context, in *RoomRequest, opts 
 }
 
 func (c *roomServiceClient) CreateStream(ctx context.Context, in *RoomRequest, opts ...grpc.CallOption) (RoomService_CreateStreamClient, error) {
-	stream, err := c.cc.NewStream(ctx, &RoomService_ServiceDesc.Streams[0], "/room.RoomService/CreateStream", opts...)
+	stream, err := c.cc.NewStream(ctx, &RoomService_ServiceDesc.Streams[0], "/lavumi.RoomService/CreateStream", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -99,7 +99,7 @@ func (x *roomServiceCreateStreamClient) Recv() (*Message, error) {
 
 func (c *roomServiceClient) BroadcastMessage(ctx context.Context, in *Message, opts ...grpc.CallOption) (*Close, error) {
 	out := new(Close)
-	err := c.cc.Invoke(ctx, "/room.RoomService/BroadcastMessage", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/lavumi.RoomService/BroadcastMessage", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -108,7 +108,7 @@ func (c *roomServiceClient) BroadcastMessage(ctx context.Context, in *Message, o
 
 func (c *roomServiceClient) LeaveRoom(ctx context.Context, in *RoomRequest, opts ...grpc.CallOption) (*RoomResponse, error) {
 	out := new(RoomResponse)
-	err := c.cc.Invoke(ctx, "/room.RoomService/LeaveRoom", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/lavumi.RoomService/LeaveRoom", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -173,7 +173,7 @@ func _RoomService_GetRoomList_Handler(srv interface{}, ctx context.Context, dec 
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/room.RoomService/GetRoomList",
+		FullMethod: "/lavumi.RoomService/GetRoomList",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(RoomServiceServer).GetRoomList(ctx, req.(*RoomRequest))
@@ -191,7 +191,7 @@ func _RoomService_CreateRoom_Handler(srv interface{}, ctx context.Context, dec f
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/room.RoomService/CreateRoom",
+		FullMethod: "/lavumi.RoomService/CreateRoom",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(RoomServiceServer).CreateRoom(ctx, req.(*RoomRequest))
@@ -209,7 +209,7 @@ func _RoomService_JoinRoom_Handler(srv interface{}, ctx context.Context, dec fun
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/room.RoomService/JoinRoom",
+		FullMethod: "/lavumi.RoomService/JoinRoom",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(RoomServiceServer).JoinRoom(ctx, req.(*RoomRequest))
@@ -248,7 +248,7 @@ func _RoomService_BroadcastMessage_Handler(srv interface{}, ctx context.Context,
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/room.RoomService/BroadcastMessage",
+		FullMethod: "/lavumi.RoomService/BroadcastMessage",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(RoomServiceServer).BroadcastMessage(ctx, req.(*Message))
@@ -266,7 +266,7 @@ func _RoomService_LeaveRoom_Handler(srv interface{}, ctx context.Context, dec fu
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/room.RoomService/LeaveRoom",
+		FullMethod: "/lavumi.RoomService/LeaveRoom",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(RoomServiceServer).LeaveRoom(ctx, req.(*RoomRequest))
@@ -278,7 +278,7 @@ func _RoomService_LeaveRoom_Handler(srv interface{}, ctx context.Context, dec fu
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var RoomService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "room.RoomService",
+	ServiceName: "lavumi.RoomService",
 	HandlerType: (*RoomServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -309,5 +309,5 @@ var RoomService_ServiceDesc = grpc.ServiceDesc{
 			ServerStreams: true,
 		},
 	},
-	Metadata: "api/proto/chatService.proto",
+	Metadata: "chatService.proto",
 }

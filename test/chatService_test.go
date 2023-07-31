@@ -8,7 +8,7 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/test/bufconn"
 	pb "grpc-game-server/pkg/api/proto"
-	chat_service "grpc-game-server/pkg/service/chat-service"
+	chat_service "grpc-game-server/pkg/service/chatService"
 	"log"
 	"net"
 	"testing"

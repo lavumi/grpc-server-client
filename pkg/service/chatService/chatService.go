@@ -1,4 +1,4 @@
-package chat_service
+package chatService
 
 import (
 	"golang.org/x/net/context"
