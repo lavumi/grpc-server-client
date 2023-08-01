@@ -16,7 +16,9 @@ Refer to [golang-standards/project-layout](https://github.com/golang-standards/p
 ```bash
 protoc --proto_path=api/proto --go_out=pkg/api --go_opt=paths=import --go-grpc_out=pkg/api --go-grpc_opt=paths=import api/proto/types/*.proto api/proto/*.proto
 ```
-
+```bash
+protoc --proto_path=api/proto --js_out=import_style=commonjs:webpage/api api/proto/types/*.proto api/proto/*.proto
+```
 
 ## Run gRPC Server
 ```bash

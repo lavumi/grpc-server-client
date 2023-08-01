@@ -22,7 +22,7 @@ func Start() {
 		log.Fatalf("fail to listen: %v", err)
 	}
 
-	db := database.Database{}
+	db := database.MongoDb{}
 	db.Init()
 
 	server := &chatService.ChattingServer{}
