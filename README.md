@@ -1,5 +1,5 @@
-# gRPC GameServer
-Game Server made by gRPC 
+# gRPC Server and Client
+Server made by gRPC 
 
 ## Installation
 
